@@ -117,6 +117,28 @@
     height: 1px;
     background: var(--gradient-gold);
   }
+  .countdown-face {
+    background: radial-gradient(circle at 35% 30%, var(--pearl), oklch(0.95 0.02 85) 70%);
+    box-shadow:
+      inset 0 0 10px oklch(0.85 0.06 85 / 0.55),
+      0 4px 12px -4px oklch(0.6 0.06 75 / 0.35);
+  }
+}
+
+@keyframes tick {
+  from {
+    opacity: 0;
+    transform: translateY(-30%) scale(0.85);
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+.animate-tick {
+  animation: tick 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 @keyframes shimmer {
@@ -176,6 +198,7 @@
   .text-gold-gradient,
   .sparkle,
   .animate-sway,
+  .animate-tick,
   .animate-pulse {
     animation: none;
   }

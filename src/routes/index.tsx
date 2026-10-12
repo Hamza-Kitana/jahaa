@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import floral from "@/assets/floral-corner.webp";
 import rose from "@/assets/white-rose.webp";
 
@@ -144,12 +144,67 @@ function Petals({ count = 8 }: { count?: number }) {
   );
 }
 
+// `cycle` is the value at which a ring is drawn full; days use one week.
 const COUNTDOWN_UNITS = [
-  { label: "يوم", ms: 86_400_000 },
-  { label: "ساعة", ms: 3_600_000 },
-  { label: "دقيقة", ms: 60_000 },
-  { label: "ثانية", ms: 1_000 },
+  { label: "يوم", ms: 86_400_000, cycle: 7 },
+  { label: "ساعة", ms: 3_600_000, cycle: 24 },
+  { label: "دقيقة", ms: 60_000, cycle: 60 },
+  { label: "ثانية", ms: 1_000, cycle: 60 },
 ] as const;
+
+const RING_RADIUS = 44;
+const RING_LENGTH = 2 * Math.PI * RING_RADIUS;
+const RING_GRADIENT_ID = "countdown-ring-gold";
+
+function CountdownRing({
+  value,
+  cycle,
+  label,
+}: {
+  value: number | null;
+  cycle: number;
+  label: string;
+}) {
+  const progress = value === null ? 1 : Math.min(value / cycle, 1);
+  const text = value === null ? "--" : String(value).padStart(2, "0");
+  return (
+    <div className="flex flex-col items-center">
+      <div className="relative aspect-square w-full max-w-[4.5rem]">
+        <div className="countdown-face absolute inset-[9%] rounded-full" />
+        <svg viewBox="0 0 100 100" className="absolute inset-0 -rotate-90" aria-hidden="true">
+          <circle
+            cx="50"
+            cy="50"
+            r={RING_RADIUS}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            className="text-gold/25"
+          />
+          <circle
+            cx="50"
+            cy="50"
+            r={RING_RADIUS}
+            fill="none"
+            stroke={`url(#${RING_GRADIENT_ID})`}
+            strokeWidth="4"
+            strokeLinecap="round"
+            strokeDasharray={RING_LENGTH}
+            strokeDashoffset={RING_LENGTH * (1 - progress)}
+            className="transition-[stroke-dashoffset] duration-700 ease-out"
+          />
+        </svg>
+        <span
+          key={text}
+          className="animate-tick absolute inset-0 flex items-center justify-center font-latin text-[1.7rem] leading-none text-gold tabular-nums lining-nums"
+        >
+          {text}
+        </span>
+      </div>
+      <span className="mt-2 text-xs text-muted-foreground">{label}</span>
+    </div>
+  );
+}
 
 function Countdown() {
   // Starts as null so the server render and the first client render match.
@@ -161,35 +216,50 @@ function Countdown() {
     return () => clearInterval(id);
   }, []);
 
+  let content: ReactNode;
   if (now !== null && now >= EVENT_END.getTime()) {
-    return <p className="text-lg text-olive">تمّت الجاهة بحمد الله، شكراً لحضوركم</p>;
-  }
-  if (now !== null && now >= EVENT_START.getTime()) {
-    return <p className="text-lg text-olive">الجاهة قائمة الآن، بانتظاركم</p>;
+    content = <p className="py-4 text-lg text-olive">تمّت الجاهة بحمد الله، شكراً لحضوركم</p>;
+  } else if (now !== null && now >= EVENT_START.getTime()) {
+    content = <p className="py-4 text-lg text-olive">الجاهة قائمة الآن، بانتظاركم</p>;
+  } else {
+    let remaining = now === null ? null : EVENT_START.getTime() - now;
+    content = (
+      <div className="grid grid-cols-4 gap-2" dir="ltr" role="timer" aria-live="off">
+        {COUNTDOWN_UNITS.map(({ label, ms, cycle }) => {
+          let value: number | null = null;
+          if (remaining !== null) {
+            value = Math.floor(remaining / ms);
+            remaining -= value * ms;
+          }
+          return <CountdownRing key={label} value={value} cycle={cycle} label={label} />;
+        })}
+      </div>
+    );
   }
 
-  let remaining = now === null ? null : EVENT_START.getTime() - now;
   return (
-    <div className="flex items-stretch justify-center gap-2" dir="ltr" role="timer" aria-live="off">
-      {COUNTDOWN_UNITS.map(({ label, ms }) => {
-        let value: string = "--";
-        if (remaining !== null) {
-          const amount = Math.floor(remaining / ms);
-          remaining -= amount * ms;
-          value = String(amount).padStart(2, "0");
-        }
-        return (
-          <div
-            key={label}
-            className="flex w-16 flex-col items-center rounded-2xl border border-gold/30 bg-ivory/70 py-2"
-          >
-            <span className="font-latin text-3xl leading-none text-gold tabular-nums lining-nums">
-              {value}
-            </span>
-            <span className="mt-1 text-xs text-muted-foreground">{label}</span>
-          </div>
-        );
-      })}
+    <div className="relative overflow-hidden rounded-[2rem] border border-gold/40 bg-ivory/60 px-3 pb-5 pt-6 shadow-sm">
+      <div className="pointer-events-none absolute inset-1.5 rounded-[1.7rem] border border-gold/20" />
+      <div className="pointer-events-none absolute inset-x-10 -top-8 h-20 rounded-b-full bg-glow opacity-70" />
+      <svg width="0" height="0" className="absolute" aria-hidden="true">
+        <defs>
+          <linearGradient id={RING_GRADIENT_ID} x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="oklch(0.62 0.08 70)" />
+            <stop offset="0.5" stopColor="oklch(0.86 0.07 88)" />
+            <stop offset="1" stopColor="oklch(0.66 0.09 72)" />
+          </linearGradient>
+        </defs>
+      </svg>
+      <div className="relative mb-5 flex items-center justify-center gap-2 sm:gap-3">
+        <span className="gold-line hidden w-8 sm:block" />
+        <Star size={12} className="shrink-0" />
+        <p className="whitespace-nowrap font-display text-lg text-olive sm:text-xl">
+          العدّ التنازلي لفرحتنا
+        </p>
+        <Star size={12} className="shrink-0" />
+        <span className="gold-line hidden w-8 sm:block" />
+      </div>
+      <div className="relative">{content}</div>
     </div>
   );
 }
@@ -461,7 +531,6 @@ function Invitation() {
           <p className="reveal font-display text-3xl">{VENUE}</p>
 
           <div className="reveal mt-9">
-            <p className="mb-3 text-sm text-muted-foreground">الوقت المتبقي</p>
             <Countdown />
           </div>
 
