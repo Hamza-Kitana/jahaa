@@ -514,15 +514,15 @@ function InvitationPage() {
             className="bloom absolute left-1/2 top-1/2 -ml-40 -mt-40 h-80 w-80"
           />
           <div className="relative">
-            <p className="reveal font-display text-gold-gradient text-8xl leading-tight drop-shadow-sm">
+            <p className="reveal font-display text-gold-gradient names-ink text-8xl leading-tight">
               بلال
             </p>
             <div className="reveal my-3 flex items-center justify-center gap-3">
               <span className="gold-line w-10" />
-              <span className="font-latin text-3xl italic text-gold">&amp;</span>
+              <span className="font-latin text-4xl italic text-[oklch(0.55_0.09_68)]">&amp;</span>
               <span className="gold-line w-10" />
             </div>
-            <p className="reveal font-display text-gold-gradient text-8xl leading-tight drop-shadow-sm">
+            <p className="reveal font-display text-gold-gradient names-ink text-8xl leading-tight">
               روان
             </p>
           </div>
@@ -837,7 +837,7 @@ function Invitation() {
           {
             scale: 1,
             rotate: 0,
-            opacity: 0.55,
+            opacity: 0.4,
             ease: "power1.out",
             scrollTrigger: { trigger: ".names", start: "top 90%", end: "center 50%", scrub: 1 },
           },
@@ -1036,11 +1036,13 @@ function Invitation() {
           <div className="door-reveal absolute inset-0 flex flex-col items-center justify-center px-6 text-center opacity-0">
             <p className="font-display text-xl text-olive lg:text-3xl">بكل الحب نزفّ إليكم</p>
             <div className="mt-4 flex flex-col items-center lg:mt-8 lg:flex-row lg:gap-12">
-              <p className="font-display text-gold-gradient text-7xl leading-tight drop-shadow-sm lg:text-[9rem]">
+              <p className="font-display text-gold-gradient names-ink text-7xl leading-tight lg:text-[9rem]">
                 بلال
               </p>
-              <span className="my-1 font-latin text-3xl italic text-gold lg:text-7xl">&amp;</span>
-              <p className="font-display text-gold-gradient text-7xl leading-tight drop-shadow-sm lg:text-[9rem]">
+              <span className="my-1 font-latin text-4xl italic text-[oklch(0.55_0.09_68)] lg:text-7xl">
+                &amp;
+              </span>
+              <p className="font-display text-gold-gradient names-ink text-7xl leading-tight lg:text-[9rem]">
                 روان
               </p>
             </div>
