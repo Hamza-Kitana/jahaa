@@ -522,12 +522,13 @@ function InvitationPage() {
             <p className="reveal font-display text-gold-gradient names-ink text-8xl leading-tight">
               بلال
             </p>
-            <div className="reveal my-3 flex items-center justify-center gap-3">
+            <div className="reveal mt-5 flex items-center justify-center gap-3">
               <span className="gold-line w-10" />
               <span className="font-latin text-4xl italic text-[oklch(0.55_0.09_68)]">&amp;</span>
               <span className="gold-line w-10" />
             </div>
-            <p className="reveal font-display text-gold-gradient names-ink text-8xl leading-tight">
+            {/* Aref Ruqaa leaves empty room above رَوان (no tall letters), so pull it up. */}
+            <p className="reveal -mt-8 font-display text-gold-gradient names-ink text-8xl leading-tight">
               روان
             </p>
           </div>
