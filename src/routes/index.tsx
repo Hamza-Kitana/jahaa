@@ -520,7 +520,7 @@ function InvitationPage() {
             loading="lazy"
             className="bloom absolute left-1/2 top-1/2 -ml-40 -mt-40 h-80 w-80"
           />
-          <div className="relative">
+          <div className="relative flex flex-col">
             <p className="reveal font-display text-gold-gradient names-ink text-8xl leading-tight">
               بلال
             </p>

@@ -357,6 +357,11 @@
   );
   filter: drop-shadow(0 0 8px oklch(0.995 0.008 85 / 0.95))
     drop-shadow(0 2px 3px oklch(0.4 0.05 70 / 0.35));
+  /* background-clip: text only paints inside the box, and Aref Ruqaa dots (ب) hang below the
+     line box; pad the box to cover them and cancel the padding so layout doesn't move. */
+  padding: 0 0.2em 0.35em;
+  margin-inline: -0.2em;
+  margin-bottom: -0.35em;
 }
 
 .couple-rays {
