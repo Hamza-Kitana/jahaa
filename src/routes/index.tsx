@@ -6,6 +6,8 @@ import rose from "@/assets/white-rose.webp";
 const EVENT_START = new Date("2026-10-19T19:00:00+03:00");
 const EVENT_END = new Date("2026-10-19T21:00:00+03:00");
 const VENUE = "دارة الحاج أحمد مسلم الأعرج";
+// Search by name until the exact Google Maps share link is available.
+const VENUE_MAP_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(VENUE)}`;
 const TITLE = "دعوة جاهة كريمة — بلال & روان";
 
 export const Route = createFileRoute("/")({
@@ -528,7 +530,32 @@ function Invitation() {
             <Star size={16} />
             <span className="gold-line w-16" />
           </div>
-          <p className="reveal font-display text-3xl">{VENUE}</p>
+          <div className="reveal flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
+            <p className="font-display text-3xl">{VENUE}</p>
+            <a
+              href={VENUE_MAP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="موقع الدارة على خرائط جوجل"
+              title="الموقع على الخريطة"
+              className="map-pin inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-gold/60 bg-pearl text-gold shadow-card transition hover:bg-gold hover:text-primary-foreground"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z" />
+                <circle cx="12" cy="9.5" r="2.5" />
+              </svg>
+            </a>
+          </div>
 
           <div className="reveal mt-9">
             <Countdown />
@@ -566,7 +593,7 @@ function Invitation() {
 
 function share() {
   const url = window.location.origin + window.location.pathname;
-  const text = `${TITLE}\nالاثنين 19/10/2026 الساعة 7:00 مساءً\n${VENUE}\n${url}`;
+  const text = `${TITLE}\nالاثنين 19/10/2026 الساعة 7:00 مساءً\n${VENUE}\nالموقع: ${VENUE_MAP_URL}\n\nالدعوة: ${url}`;
   window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank", "noopener");
 }
 
