@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import type { gsap as GsapInstance } from "gsap";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import bride from "@/assets/bride.webp";
 import floral from "@/assets/floral-corner.webp";
@@ -45,7 +46,7 @@ function Star({ size, className = "" }: { size: number; className?: string }) {
 
 function Ornament({ className = "" }: { className?: string }) {
   return (
-    <div className={`flex items-center justify-center gap-3 ${className}`}>
+    <div className={`ornament flex items-center justify-center gap-3 ${className}`}>
       <span className="gold-line w-14" />
       <Star size={22} />
       <span className="gold-line w-14" />
@@ -293,6 +294,10 @@ function CoupleScene() {
               className="couple-step h-full w-auto max-w-none"
             />
           </div>
+          <div
+            className="couple-burst pointer-events-none absolute left-1/2 top-0"
+            aria-hidden="true"
+          />
           <WeddingRings className="couple-rings absolute left-1/2 top-0 w-20 -translate-x-1/2 -translate-y-[85%] drop-shadow-md lg:w-24" />
         </div>
       </div>
@@ -324,7 +329,7 @@ function CountdownRing({
   const progress = value === null ? 1 : Math.min(value / cycle, 1);
   const text = value === null ? "--" : String(value).padStart(2, "0");
   return (
-    <div className="flex flex-col items-center">
+    <div className="countdown-unit flex flex-col items-center">
       <div className="relative aspect-square w-full max-w-[4.5rem]">
         <div className="countdown-face absolute inset-[9%] rounded-full" />
         <svg viewBox="0 0 100 100" className="absolute inset-0 -rotate-90" aria-hidden="true">
@@ -633,14 +638,14 @@ function DetailsPage() {
           dir="ltr"
           aria-label="19/10/2026"
         >
-          <span className="font-latin text-6xl text-gold-gradient">19</span>
+          <span className="count-up font-latin text-6xl text-gold-gradient tabular-nums">19</span>
           <span className="h-10 w-px bg-gold/50" />
-          <span className="font-latin text-6xl text-gold-gradient">10</span>
+          <span className="count-up font-latin text-6xl text-gold-gradient tabular-nums">10</span>
           <span className="h-10 w-px bg-gold/50" />
-          <span className="font-latin text-6xl text-gold-gradient">2026</span>
+          <span className="count-up font-latin text-6xl text-gold-gradient tabular-nums">2026</span>
         </div>
         <p className="reveal mt-5 text-lg">من الساعة 7:00 مساءً حتى 9:00 مساءً</p>
-        <div className="reveal my-7 flex items-center justify-center gap-3">
+        <div className="ornament reveal my-7 flex items-center justify-center gap-3">
           <span className="gold-line w-16" />
           <Star size={16} />
           <span className="gold-line w-16" />
@@ -662,7 +667,7 @@ function DetailsPage() {
           <button
             type="button"
             onClick={share}
-            className="rounded-full bg-gold px-6 py-3.5 font-bold text-primary-foreground shadow-card transition hover:-translate-y-0.5 hover:opacity-90"
+            className="btn-shine relative overflow-hidden rounded-full bg-gold px-6 py-3.5 font-bold text-primary-foreground shadow-card transition hover:-translate-y-0.5 hover:opacity-90"
           >
             مشاركة الدعوة عبر واتساب
           </button>
@@ -694,6 +699,32 @@ function BookSpine() {
         <span className="font-latin text-3xl italic text-gold">R</span>
         <span className="w-px flex-1 bg-linear-to-t from-transparent to-gold" />
       </div>
+    </div>
+  );
+}
+
+// Pure CSS so it plays from the server-rendered HTML, before any script loads.
+// It never takes pointer events, so it can't block the page if it lingers.
+function Splash() {
+  return (
+    <div
+      className="splash pointer-events-none fixed inset-0 z-50 flex flex-col items-center justify-center bg-pearl motion-reduce:hidden"
+      aria-hidden="true"
+    >
+      <div className="bg-glow absolute inset-0 opacity-60" />
+      <div className="relative flex h-44 w-44 items-center justify-center lg:h-60 lg:w-60">
+        <svg viewBox="0 0 100 100" className="absolute inset-0 -rotate-90">
+          <circle cx="50" cy="50" r="47" className="splash-ring" />
+          <circle cx="50" cy="50" r="43" className="splash-ring splash-ring-inner" />
+        </svg>
+        <p className="splash-mono font-latin text-gold-gradient text-5xl italic lg:text-7xl">
+          B &amp; R
+        </p>
+      </div>
+      <p className="splash-sub relative mt-8 font-display text-xl text-olive lg:text-2xl">
+        بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+      </p>
+      <span className="gold-line absolute inset-x-0 bottom-0" />
     </div>
   );
 }
@@ -799,6 +830,43 @@ function MobileActionBar() {
   );
 }
 
+const CONFETTI_COLORS = [
+  "oklch(0.74 0.12 82)",
+  "oklch(0.6 0.1 70)",
+  "oklch(0.82 0.11 90)",
+  "oklch(0.72 0.08 40)",
+];
+
+function burstConfetti(gsap: typeof GsapInstance) {
+  const host = document.querySelector(".couple-burst");
+  if (!host) return;
+  const count = 28;
+  for (let i = 0; i < count; i++) {
+    const piece = document.createElement("span");
+    piece.className = "confetti";
+    piece.style.background = CONFETTI_COLORS[i % CONFETTI_COLORS.length] ?? "";
+    if (i % 3 === 0) piece.style.borderRadius = "999px";
+    host.appendChild(piece);
+    const angle = (i / count) * Math.PI * 2 + gsap.utils.random(-0.2, 0.2);
+    const distance = gsap.utils.random(70, 180);
+    gsap
+      .timeline({ onComplete: () => piece.remove() })
+      .fromTo(
+        piece,
+        { x: 0, y: 0, scale: 0, rotate: 0, opacity: 1 },
+        {
+          x: Math.cos(angle) * distance,
+          y: Math.sin(angle) * distance * 0.7 - 30,
+          scale: gsap.utils.random(0.7, 1.4),
+          rotate: gsap.utils.random(-260, 260),
+          duration: 0.7,
+          ease: "power3.out",
+        },
+      )
+      .to(piece, { y: "+=140", rotate: "+=140", opacity: 0, duration: 1.4, ease: "power1.in" });
+  }
+}
+
 function Invitation() {
   const root = useRef<HTMLElement>(null);
 
@@ -874,18 +942,112 @@ function Invitation() {
       const desktop = gsap.matchMedia(root.current);
       mm = desktop;
 
-      // The couple walks in from both sides and meets under the arch.
       desktop.add("(prefers-reduced-motion: no-preference)", () => {
-        gsap
-          .timeline({
-            defaults: { ease: "none" },
+        gsap.fromTo(
+          ".scroll-progress",
+          { scaleX: 0 },
+          {
+            scaleX: 1,
+            ease: "none",
             scrollTrigger: {
-              trigger: ".scene-couple",
+              trigger: document.documentElement,
               start: "top top",
               end: "bottom bottom",
-              scrub: 1,
+              scrub: 0.3,
             },
-          })
+          },
+        );
+
+        // Light leaking through the seam floods out as the doors part.
+        gsap.to(".door-crack", {
+          scaleX: 40,
+          opacity: 0,
+          ease: "power1.in",
+          scrollTrigger: {
+            trigger: ".scene-doors",
+            start: "top top",
+            end: "35% top",
+            scrub: 1,
+          },
+        });
+
+        // Ornaments: the star spins in, then the lines grow out of it.
+        gsap.utils.toArray<HTMLElement>(".ornament").forEach((orn) => {
+          const star = orn.querySelector("svg");
+          if (!star) return;
+          const starX = star.getBoundingClientRect().left;
+          const lines = gsap.utils.toArray<HTMLElement>(orn.querySelectorAll(".gold-line"));
+          lines.forEach((line) => {
+            const fromStar = line.getBoundingClientRect().left >= starX ? "left" : "right";
+            gsap.set(line, { transformOrigin: `${fromStar} center` });
+          });
+          gsap
+            .timeline({
+              scrollTrigger: {
+                trigger: orn,
+                start: "top 92%",
+                toggleActions: "play none none reverse",
+              },
+            })
+            .from(star, { scale: 0, rotate: -180, duration: 0.8, ease: "back.out(2)" })
+            .from(lines, { scaleX: 0, duration: 0.9, ease: "power3.out" }, 0.2);
+        });
+
+        gsap.utils.toArray<HTMLElement>(".count-up").forEach((el) => {
+          const target = Number(el.textContent);
+          const counter = { v: target > 100 ? target - 26 : 0 };
+          gsap.to(counter, {
+            v: target,
+            duration: 1.8,
+            ease: "power2.out",
+            onUpdate: () => {
+              el.textContent = String(Math.round(counter.v)).padStart(2, "0");
+            },
+            scrollTrigger: { trigger: el, start: "top 88%", once: true },
+          });
+        });
+
+        gsap.from(".map-pin", {
+          y: -40,
+          opacity: 0,
+          duration: 1.1,
+          ease: "bounce.out",
+          scrollTrigger: {
+            trigger: ".map-pin",
+            start: "top 92%",
+            toggleActions: "play none none reverse",
+          },
+        });
+
+        // The units vanish once the event starts, so only animate them if present.
+        const units = gsap.utils.toArray<HTMLElement>(".countdown-unit");
+        const firstUnit = units[0];
+        if (firstUnit) {
+          gsap.from(units, {
+            scale: 0.4,
+            opacity: 0,
+            duration: 0.8,
+            stagger: 0.12,
+            ease: "back.out(1.8)",
+            scrollTrigger: {
+              trigger: firstUnit,
+              start: "top 92%",
+              toggleActions: "play none none reverse",
+            },
+          });
+        }
+
+        // The couple walks in from both sides and meets under the arch.
+        const couple = gsap.timeline({
+          defaults: { ease: "none" },
+          scrollTrigger: {
+            trigger: ".scene-couple",
+            start: "top top",
+            end: "bottom bottom",
+            scrub: 1,
+          },
+        });
+        couple
           .to(".couple-intro", { opacity: 0, y: -24, duration: 0.12 }, 0.02)
           .from(".couple-stage", { scale: 0.86, duration: 0.7, ease: "power1.out" }, 0)
           .from(
@@ -922,6 +1084,13 @@ function Invitation() {
             ".couple-rings",
             { scale: 0, rotate: -50, opacity: 0, duration: 0.16, ease: "back.out(2.2)" },
             0.62,
+          )
+          .call(
+            () => {
+              if (couple.scrollTrigger?.direction !== -1) burstConfetti(gsap);
+            },
+            [],
+            0.64,
           )
           .from(".couple-title > *", { opacity: 0, y: 26, duration: 0.14, stagger: 0.05 }, 0.66)
           .from(".couple-name-bride", { opacity: 0, x: -60, duration: 0.18 }, 0.7)
@@ -989,8 +1158,39 @@ function Invitation() {
           const glowX = gsap.quickTo(glow, "x", { duration: 0.6, ease: "power3" });
           const glowY = gsap.quickTo(glow, "y", { duration: 0.6, ease: "power3" });
 
+          // Gold dust trailing the cursor; throttled and capped so it stays cheap.
+          const trail = document.createElement("div");
+          trail.className = "pointer-events-none fixed inset-0 z-20 overflow-hidden";
+          trail.setAttribute("aria-hidden", "true");
+          root.current?.appendChild(trail);
+          let lastDust = 0;
+          const dropDust = (x: number, y: number) => {
+            const now = performance.now();
+            if (now - lastDust < 45 || trail.childElementCount > 22) return;
+            lastDust = now;
+            const dust = document.createElement("span");
+            dust.className = "trail-dust";
+            dust.style.left = `${x}px`;
+            dust.style.top = `${y}px`;
+            trail.appendChild(dust);
+            gsap.fromTo(
+              dust,
+              { scale: gsap.utils.random(0.6, 1.2), opacity: 0.95 },
+              {
+                x: gsap.utils.random(-18, 18),
+                y: gsap.utils.random(14, 46),
+                scale: 0,
+                opacity: 0,
+                duration: gsap.utils.random(0.7, 1.2),
+                ease: "power1.out",
+                onComplete: () => dust.remove(),
+              },
+            );
+          };
+
           let glowShown = false;
           const onMove = (e: MouseEvent) => {
+            dropDust(e.clientX, e.clientY);
             const nx = e.clientX / window.innerWidth - 0.5;
             const ny = e.clientY / window.innerHeight - 0.5;
             tilts.forEach((t) => {
@@ -1018,6 +1218,7 @@ function Invitation() {
           return () => {
             window.removeEventListener("mousemove", onMove);
             document.documentElement.removeEventListener("mouseleave", onLeave);
+            trail.remove();
           };
         },
       );
@@ -1051,6 +1252,11 @@ function Invitation() {
 
   return (
     <main ref={root} className="overflow-x-clip bg-background font-body text-foreground">
+      <Splash />
+      <div
+        className="scroll-progress gold-line pointer-events-none fixed inset-x-0 top-0 z-40 h-[3px] origin-right motion-reduce:hidden"
+        style={{ transform: "scaleX(0)" }}
+      />
       <div className="cursor-glow pointer-events-none fixed left-0 top-0 z-20 hidden h-[36rem] w-[36rem] rounded-full opacity-0 lg:block" />
       <Petals />
 
@@ -1083,6 +1289,9 @@ function Invitation() {
           </div>
           <Door side="left" />
           <Door side="right" />
+          <div className="door-crack pointer-events-none absolute inset-y-0 left-1/2 w-1 -translate-x-1/2 motion-reduce:hidden">
+            <span className="door-crack-light absolute inset-0" />
+          </div>
           <div className="door-intro pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center">
             <div className="rounded-full bg-pearl/95 px-10 py-10 shadow-card lg:px-16 lg:py-14">
               <p className="font-latin text-gold-gradient text-6xl italic leading-none lg:text-8xl">
