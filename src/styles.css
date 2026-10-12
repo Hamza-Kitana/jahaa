@@ -209,9 +209,49 @@
     transform: rotate(3deg);
   }
 }
-.animate-sway {
+@utility animate-sway {
   animation: sway 5s ease-in-out infinite;
   transform-origin: top center;
+}
+
+.cursor-glow {
+  background: radial-gradient(circle, oklch(0.9 0.08 85 / 0.55), transparent 65%);
+  mix-blend-mode: multiply;
+  will-change: transform;
+}
+
+.mouse-hint {
+  position: relative;
+  width: 26px;
+  height: 42px;
+  border: 1.5px solid var(--gold);
+  border-radius: 999px;
+}
+.mouse-hint::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 8px;
+  width: 4px;
+  height: 8px;
+  margin-left: -2px;
+  border-radius: 999px;
+  background: var(--gold);
+  animation: wheel 1.8s ease-in-out infinite;
+}
+@keyframes wheel {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  70% {
+    transform: translateY(14px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 0;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -220,9 +260,10 @@
   }
   .text-gold-gradient,
   .sparkle,
-  .animate-sway,
+  [class*="animate-sway"],
   .animate-tick,
   .map-pin::after,
+  .mouse-hint::after,
   .animate-pulse {
     animation: none;
   }

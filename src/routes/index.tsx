@@ -51,6 +51,46 @@ function Ornament({ className = "" }: { className?: string }) {
   );
 }
 
+function LineIcon({ size = 20, children }: { size?: number | undefined; children: ReactNode }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      {children}
+    </svg>
+  );
+}
+
+const PinIcon = ({ size }: { size?: number }) => (
+  <LineIcon size={size}>
+    <path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z" />
+    <circle cx="12" cy="9.5" r="2.5" />
+  </LineIcon>
+);
+
+const ChatIcon = ({ size }: { size?: number }) => (
+  <LineIcon size={size}>
+    <path d="M4 20l1.3-3.9A8 8 0 1 1 8 19.1L4 20z" />
+    <path d="M9 10.5h6M9 13.5h4" />
+  </LineIcon>
+);
+
+const CalendarIcon = ({ size }: { size?: number }) => (
+  <LineIcon size={size}>
+    <rect x="3.5" y="5" width="17" height="15" rx="2.5" />
+    <path d="M3.5 9.5h17M8 3v4M16 3v4" />
+    <path d="M12 13.5l.7 1.4 1.5.2-1.1 1 .3 1.5-1.4-.7-1.4.7.3-1.5-1.1-1 1.5-.2z" />
+  </LineIcon>
+);
+
 function Door({ side }: { side: "left" | "right" }) {
   const isLeft = side === "left";
   return (
@@ -61,14 +101,15 @@ function Door({ side }: { side: "left" | "right" }) {
         backfaceVisibility: "hidden",
       }}
     >
-      <div className="absolute inset-4 rounded-t-[999px] border border-gold/50" />
-      <div className="absolute inset-7 rounded-t-[999px] border border-gold/30" />
+      <div className="absolute inset-4 rounded-t-[999px] border border-gold/50 lg:inset-8" />
+      <div className="absolute inset-7 rounded-t-[999px] border border-gold/30 lg:inset-12" />
+      {/* Sized by height on wide screens so the flowers stay corner pieces. */}
       <img
         src={floral}
         alt=""
         width={900}
         height={900}
-        className="absolute bottom-0 w-[85%] opacity-95"
+        className="absolute bottom-0 w-[85%] max-w-none opacity-95 lg:h-[58%] lg:w-auto"
         style={{
           [isLeft ? "left" : "right"]: 0,
           transform: `scaleY(-1) ${isLeft ? "" : "scaleX(-1)"}`,
@@ -79,11 +120,11 @@ function Door({ side }: { side: "left" | "right" }) {
         alt=""
         width={900}
         height={900}
-        className="absolute top-0 w-[60%] opacity-90"
+        className="absolute top-0 w-[60%] max-w-none opacity-90 lg:h-[40%] lg:w-auto"
         style={{ [isLeft ? "left" : "right"]: 0, transform: isLeft ? "" : "scaleX(-1)" }}
       />
       <div
-        className={`absolute top-1/2 h-16 w-2 -translate-y-1/2 rounded-full bg-gold ${isLeft ? "right-4" : "left-4"}`}
+        className={`absolute top-1/2 h-16 w-2 -translate-y-1/2 rounded-full bg-gold lg:h-28 lg:w-2.5 ${isLeft ? "right-4 lg:right-8" : "left-4 lg:left-8"}`}
       />
     </div>
   );
@@ -266,12 +307,322 @@ function Countdown() {
   );
 }
 
+function ArchFrames({ desktopArch = true }: { desktopArch?: boolean }) {
+  const outer = desktopArch
+    ? "rounded-t-[999px] rounded-b-none lg:rounded-b-[2.6rem]"
+    : "rounded-[2.6rem] lg:rounded-t-[999px]";
+  const inner = desktopArch
+    ? "rounded-t-[999px] rounded-b-none lg:rounded-b-[2.2rem]"
+    : "rounded-[2.2rem] lg:rounded-t-[999px]";
+  return (
+    <>
+      <div className={`pointer-events-none absolute inset-2 border border-gold/40 ${outer}`} />
+      <div className={`pointer-events-none absolute inset-4 border border-gold/20 ${inner}`} />
+    </>
+  );
+}
+
+function InvitationPage() {
+  return (
+    <div className="relative h-full overflow-hidden rounded-t-[999px] border border-gold/50 bg-pearl px-6 pb-16 pt-28 text-center shadow-card lg:flex lg:flex-col lg:justify-center lg:rounded-b-[3rem] lg:px-12 lg:pt-36">
+      <ArchFrames />
+      <div className="pointer-events-none absolute inset-x-10 top-0 h-40 rounded-b-full bg-glow opacity-70" />
+      <div className="pointer-events-none absolute left-1/2 top-6 -translate-x-1/2 lg:top-10">
+        <Star size={46} />
+      </div>
+      <img
+        src={floral}
+        alt=""
+        width={900}
+        height={900}
+        loading="lazy"
+        className="animate-sway absolute -right-8 -top-4 w-52 opacity-95 lg:w-64"
+        // `scale` instead of `transform`, which the sway animation overrides.
+        style={{ scale: "-1 1" }}
+      />
+      <img
+        src={floral}
+        alt=""
+        width={900}
+        height={900}
+        loading="lazy"
+        className="animate-sway absolute -left-8 -top-4 w-52 opacity-95 lg:w-64"
+        style={{ animationDelay: "1.2s" }}
+      />
+      <img
+        src={floral}
+        alt=""
+        width={900}
+        height={900}
+        loading="lazy"
+        className="absolute -bottom-10 -right-10 w-48 opacity-60 lg:w-56"
+        style={{ transform: "scaleY(-1) scaleX(-1)" }}
+      />
+      <img
+        src={floral}
+        alt=""
+        width={900}
+        height={900}
+        loading="lazy"
+        className="absolute -bottom-10 -left-10 w-48 opacity-60 lg:w-56"
+        style={{ transform: "scaleY(-1)" }}
+      />
+
+      <div className="relative">
+        <p className="reveal font-display text-gold-gradient text-4xl leading-snug lg:text-5xl">
+          بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+        </p>
+        <div className="reveal mx-auto mt-6 max-w-[19rem] rounded-2xl border border-gold/30 bg-ivory/70 px-5 py-4 shadow-sm lg:max-w-sm">
+          <p className="text-lg leading-loose text-olive">
+            ﴿ وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنْفُسِكُمْ أَزْوَاجًا لِتَسْكُنُوا إِلَيْهَا
+            ﴾
+          </p>
+        </div>
+        <Ornament className="reveal my-8" />
+        <p className="reveal text-lg leading-loose">بكل الحب والسرور، وقلوب يملؤها الفرح، يتشرف</p>
+        <p className="reveal mt-4 font-display text-3xl">السيد إبراهيم البرغوثي</p>
+        <p className="reveal my-1 font-latin text-2xl italic text-gold">&amp;</p>
+        <p className="reveal font-display text-3xl">السيد سليمان أبو ليلى</p>
+        <p className="reveal mt-5 text-lg">بدعوتكم لحضور خطوبة</p>
+
+        <div className="names relative my-12 py-8">
+          <Sparkles count={12} />
+          <img
+            src={rose}
+            alt=""
+            width={640}
+            height={640}
+            loading="lazy"
+            className="bloom absolute left-1/2 top-1/2 -ml-40 -mt-40 h-80 w-80"
+          />
+          <div className="relative">
+            <p className="reveal text-sm tracking-wide text-muted-foreground">ابنه</p>
+            <p className="reveal font-display text-gold-gradient text-8xl leading-tight drop-shadow-sm">
+              بلال
+            </p>
+            <div className="reveal my-3 flex items-center justify-center gap-3">
+              <span className="gold-line w-10" />
+              <span className="font-latin text-3xl italic text-gold">&amp;</span>
+              <span className="gold-line w-10" />
+            </div>
+            <p className="reveal text-sm tracking-wide text-muted-foreground">ابنته</p>
+            <p className="reveal font-display text-gold-gradient text-8xl leading-tight drop-shadow-sm">
+              روان
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DetailsPage() {
+  return (
+    <div className="relative h-full overflow-hidden rounded-[3rem] border border-gold/50 bg-pearl px-6 py-14 text-center shadow-card lg:flex lg:flex-col lg:justify-center lg:rounded-t-[999px] lg:px-12 lg:pt-36">
+      <ArchFrames desktopArch={false} />
+      <div className="pointer-events-none absolute inset-x-16 -top-10 h-32 rounded-b-full bg-glow opacity-80 lg:inset-x-10 lg:top-0 lg:h-40" />
+      <div className="pointer-events-none absolute left-1/2 top-10 hidden -translate-x-1/2 lg:block">
+        <Star size={46} />
+      </div>
+      <img
+        src={floral}
+        alt=""
+        width={900}
+        height={900}
+        loading="lazy"
+        className="absolute -left-8 -top-8 w-40 opacity-70 lg:animate-sway lg:-top-4 lg:w-64 lg:opacity-95"
+      />
+      <img
+        src={floral}
+        alt=""
+        width={900}
+        height={900}
+        loading="lazy"
+        className="absolute -right-8 -top-4 hidden w-64 opacity-95 lg:block lg:animate-sway"
+        style={{ scale: "-1 1", animationDelay: "1.2s" }}
+      />
+      <img
+        src={floral}
+        alt=""
+        width={900}
+        height={900}
+        loading="lazy"
+        className="absolute -bottom-8 -right-8 w-40 opacity-70 lg:-bottom-10 lg:-right-10 lg:w-56 lg:opacity-60"
+        style={{ transform: "scale(-1)" }}
+      />
+      <img
+        src={floral}
+        alt=""
+        width={900}
+        height={900}
+        loading="lazy"
+        className="absolute -bottom-10 -left-10 hidden w-56 opacity-60 lg:block"
+        style={{ transform: "scaleY(-1)" }}
+      />
+
+      <div className="relative">
+        <Ornament className="reveal mb-8" />
+        <p className="reveal font-display text-2xl text-olive">الاثنين</p>
+        <div
+          className="reveal mx-auto mt-4 flex items-center justify-center gap-4"
+          dir="ltr"
+          aria-label="19/10/2026"
+        >
+          <span className="font-latin text-6xl text-gold-gradient">19</span>
+          <span className="h-10 w-px bg-gold/50" />
+          <span className="font-latin text-6xl text-gold-gradient">10</span>
+          <span className="h-10 w-px bg-gold/50" />
+          <span className="font-latin text-6xl text-gold-gradient">2026</span>
+        </div>
+        <p className="reveal mt-5 text-lg">من الساعة 7:00 مساءً حتى 9:00 مساءً</p>
+        <div className="reveal my-7 flex items-center justify-center gap-3">
+          <span className="gold-line w-16" />
+          <Star size={16} />
+          <span className="gold-line w-16" />
+        </div>
+        <div className="reveal flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
+          <p className="font-display text-3xl">{VENUE}</p>
+          <a
+            href={VENUE_MAP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="موقع الدارة على خرائط جوجل"
+            title="الموقع على الخريطة"
+            className="map-pin inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-gold/60 bg-pearl text-gold shadow-card transition hover:bg-gold hover:text-primary-foreground"
+          >
+            <PinIcon />
+          </a>
+        </div>
+
+        <div className="reveal mt-9">
+          <Countdown />
+        </div>
+
+        <p className="reveal mt-9 font-display text-gold-gradient text-4xl leading-snug">
+          بحضوركم تكتمل فرحتنا
+        </p>
+
+        <div className="details-actions reveal mt-10 flex flex-col gap-3">
+          <button
+            type="button"
+            onClick={share}
+            className="rounded-full bg-gold px-6 py-3.5 font-bold text-primary-foreground shadow-card transition hover:-translate-y-0.5 hover:opacity-90"
+          >
+            مشاركة الدعوة عبر واتساب
+          </button>
+          <button
+            type="button"
+            onClick={saveCalendar}
+            className="rounded-full border-2 border-gold px-6 py-3.5 text-gold transition hover:-translate-y-0.5 hover:bg-gold/10"
+          >
+            حفظ الموعد في التقويم
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BookSpine() {
+  return (
+    <div
+      className="spine relative hidden w-24 shrink-0 items-center justify-center lg:flex"
+      aria-hidden="true"
+    >
+      <div className="flex h-full flex-col items-center gap-4 py-12">
+        <span className="w-px flex-1 bg-linear-to-b from-transparent to-gold" />
+        <span className="font-latin text-3xl italic text-gold">B</span>
+        <div className="rounded-full border border-gold/50 bg-pearl p-3 shadow-card">
+          <Star size={26} />
+        </div>
+        <span className="font-latin text-3xl italic text-gold">R</span>
+        <span className="w-px flex-1 bg-linear-to-t from-transparent to-gold" />
+      </div>
+    </div>
+  );
+}
+
+type ActionBarItemProps = { label: string; icon: ReactNode } & (
+  { href: string } | { onClick: () => void }
+);
+
+function ActionBarItem(props: ActionBarItemProps) {
+  const className =
+    "flex flex-1 flex-col items-center gap-0.5 rounded-full py-1.5 text-gold transition active:scale-90";
+  const content = (
+    <>
+      {props.icon}
+      <span className="text-[11px] text-foreground/80">{props.label}</span>
+    </>
+  );
+  if ("href" in props) {
+    return (
+      <a href={props.href} target="_blank" rel="noopener noreferrer" className={className}>
+        {content}
+      </a>
+    );
+  }
+  return (
+    <button type="button" onClick={props.onClick} className={className}>
+      {content}
+    </button>
+  );
+}
+
+// Phone-only floating shortcuts, shown between the doors and the main action buttons.
+function MobileActionBar() {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const doors = document.querySelector(".scene-doors");
+    const actions = document.querySelector(".details-actions");
+    let actionsInView = false;
+    const update = () => {
+      const pastDoors = doors
+        ? doors.getBoundingClientRect().bottom < window.innerHeight * 0.5
+        : true;
+      setVisible(pastDoors && !actionsInView);
+    };
+    const observer = new IntersectionObserver(([entry]) => {
+      actionsInView = entry?.isIntersecting ?? false;
+      update();
+    });
+    if (actions) observer.observe(actions);
+    window.addEventListener("scroll", update, { passive: true });
+    update();
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", update);
+    };
+  }, []);
+
+  return (
+    <nav
+      aria-label="اختصارات الدعوة"
+      inert={!visible}
+      className={`fixed inset-x-4 z-30 transition-all duration-500 ease-out lg:hidden ${
+        visible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-[160%] opacity-0"
+      }`}
+      style={{ bottom: "calc(1rem + env(safe-area-inset-bottom))" }}
+    >
+      <div className="mx-auto flex max-w-sm items-center rounded-full border border-gold/40 bg-pearl/85 px-3 py-1.5 shadow-card backdrop-blur-md">
+        <ActionBarItem label="مشاركة" icon={<ChatIcon />} onClick={share} />
+        <span className="h-8 w-px bg-gold/25" />
+        <ActionBarItem label="الموقع" icon={<PinIcon />} href={VENUE_MAP_URL} />
+        <span className="h-8 w-px bg-gold/25" />
+        <ActionBarItem label="التقويم" icon={<CalendarIcon />} onClick={saveCalendar} />
+      </div>
+    </nav>
+  );
+}
+
 function Invitation() {
   const root = useRef<HTMLElement>(null);
 
   useEffect(() => {
     let cancelled = false;
     let ctx: { revert: () => void } | undefined;
+    let mm: { revert: () => void } | undefined;
 
     void (async () => {
       const [{ gsap }, { ScrollTrigger }] = await Promise.all([
@@ -279,7 +630,7 @@ function Invitation() {
         import("gsap/ScrollTrigger"),
       ]);
       // The effect may have been cleaned up (e.g. React StrictMode) while the imports were loading.
-      if (cancelled) return;
+      if (cancelled || !root.current) return;
       gsap.registerPlugin(ScrollTrigger);
 
       ctx = gsap.context(() => {
@@ -310,7 +661,7 @@ function Invitation() {
           )
           .to(".door-curtain", { scaleX: 0.15, opacity: 0, duration: 0.6 }, 0.7);
 
-        // Scene 2: card reveal
+        // Scene 2: text reveal
         gsap.utils.toArray<HTMLElement>(".reveal").forEach((el) => {
           gsap.from(el, {
             opacity: 0,
@@ -339,6 +690,93 @@ function Invitation() {
         );
       }, root);
 
+      const desktop = gsap.matchMedia(root.current);
+      mm = desktop;
+
+      // Desktop: the two pages open like a book.
+      desktop.add("(min-width: 1024px) and (prefers-reduced-motion: no-preference)", () => {
+        const trigger = { trigger: ".book", start: "top 70%" };
+        gsap.from(".page-right", {
+          xPercent: 14,
+          rotationY: -16,
+          transformPerspective: 1600,
+          transformOrigin: "left center",
+          opacity: 0,
+          duration: 1.5,
+          ease: "power3.out",
+          scrollTrigger: trigger,
+        });
+        gsap.from(".page-left", {
+          xPercent: -14,
+          rotationY: 16,
+          transformPerspective: 1600,
+          transformOrigin: "right center",
+          opacity: 0,
+          duration: 1.5,
+          delay: 0.15,
+          ease: "power3.out",
+          scrollTrigger: trigger,
+        });
+        gsap.from(".spine", {
+          scaleY: 0,
+          opacity: 0,
+          duration: 1.2,
+          delay: 0.4,
+          ease: "power2.out",
+          scrollTrigger: trigger,
+        });
+      });
+
+      // Desktop with a mouse: 3D tilt, cursor light and parallax flowers.
+      desktop.add(
+        "(min-width: 1024px) and (pointer: fine) and (prefers-reduced-motion: no-preference)",
+        () => {
+          const tilts = gsap.utils.toArray<HTMLElement>(".tilt").map((el) => {
+            gsap.set(el, { transformPerspective: 1400 });
+            return {
+              rx: gsap.quickTo(el, "rotationX", { duration: 0.9, ease: "power3" }),
+              ry: gsap.quickTo(el, "rotationY", { duration: 0.9, ease: "power3" }),
+            };
+          });
+          const layers = gsap.utils.toArray<HTMLElement>("[data-depth]").map((el) => {
+            const depth = Number(el.dataset["depth"]);
+            return {
+              depth,
+              x: gsap.quickTo(el, "x", { duration: 1.4, ease: "power3" }),
+              y: gsap.quickTo(el, "y", { duration: 1.4, ease: "power3" }),
+            };
+          });
+          const glow = document.querySelector<HTMLElement>(".cursor-glow");
+          gsap.set(glow, { xPercent: -50, yPercent: -50, opacity: 0 });
+          const glowX = gsap.quickTo(glow, "x", { duration: 0.6, ease: "power3" });
+          const glowY = gsap.quickTo(glow, "y", { duration: 0.6, ease: "power3" });
+
+          const onMove = (e: MouseEvent) => {
+            const nx = e.clientX / window.innerWidth - 0.5;
+            const ny = e.clientY / window.innerHeight - 0.5;
+            tilts.forEach((t) => {
+              t.ry(nx * 7);
+              t.rx(-ny * 5);
+            });
+            layers.forEach((l) => {
+              l.x(-nx * l.depth);
+              l.y(-ny * l.depth);
+            });
+            glowX(e.clientX);
+            glowY(e.clientY);
+            gsap.to(glow, { opacity: 1, duration: 0.6, overwrite: "auto" });
+          };
+          const onLeave = () => gsap.to(glow, { opacity: 0, duration: 0.6, overwrite: "auto" });
+
+          window.addEventListener("mousemove", onMove);
+          document.documentElement.addEventListener("mouseleave", onLeave);
+          return () => {
+            window.removeEventListener("mousemove", onMove);
+            document.documentElement.removeEventListener("mouseleave", onLeave);
+          };
+        },
+      );
+
       // Web fonts change text heights after load, which shifts every trigger position.
       void document.fonts?.ready.then(() => {
         if (!cancelled) ScrollTrigger.refresh();
@@ -347,246 +785,111 @@ function Invitation() {
 
     return () => {
       cancelled = true;
+      mm?.revert();
       ctx?.revert();
     };
   }, []);
 
   return (
     <main ref={root} className="overflow-x-clip bg-background font-body text-foreground">
+      <div className="cursor-glow pointer-events-none fixed left-0 top-0 z-20 hidden h-[36rem] w-[36rem] rounded-full opacity-0 lg:block" />
       <Petals />
-      {/* Scene 1 */}
+
+      {/* Scene 1: doors */}
       <section className="scene-doors relative h-[220svh]">
         <div className="sticky top-0 h-svh overflow-hidden" style={{ perspective: "1600px" }}>
           <div className="bg-silk door-curtain absolute inset-0 origin-center" />
           <div className="door-glow bg-glow absolute inset-0" />
-          <Sparkles />
+          <Sparkles count={22} />
           <div className="door-reveal absolute inset-0 flex flex-col items-center justify-center px-6 text-center opacity-0">
-            <p className="font-display text-xl text-olive">بكل الحب نزفّ إليكم</p>
-            <p className="mt-4 font-display text-gold-gradient text-7xl leading-tight drop-shadow-sm">
-              بلال
+            <p className="font-display text-xl text-olive lg:text-3xl">بكل الحب نزفّ إليكم</p>
+            <div className="mt-4 flex flex-col items-center lg:mt-8 lg:flex-row lg:gap-12">
+              <p className="font-display text-gold-gradient text-7xl leading-tight drop-shadow-sm lg:text-[9rem]">
+                بلال
+              </p>
+              <span className="my-1 font-latin text-3xl italic text-gold lg:text-7xl">&amp;</span>
+              <p className="font-display text-gold-gradient text-7xl leading-tight drop-shadow-sm lg:text-[9rem]">
+                روان
+              </p>
+            </div>
+            <Ornament className="mt-6 lg:mt-10" />
+            <p
+              className="mt-4 font-latin text-lg tracking-[0.3em] text-gold lining-nums lg:text-2xl"
+              dir="ltr"
+            >
+              19 · 10 · 2026
             </p>
-            <span className="my-1 font-latin text-3xl italic text-gold">&amp;</span>
-            <p className="font-display text-gold-gradient text-7xl leading-tight drop-shadow-sm">
-              روان
-            </p>
-            <Ornament className="mt-6" />
           </div>
           <Door side="left" />
           <Door side="right" />
           <div className="door-intro pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center">
-            <div className="rounded-full bg-pearl/85 px-10 py-10 shadow-card backdrop-blur-sm">
-              <p className="font-latin text-gold-gradient text-6xl italic leading-none">
+            <div className="rounded-full bg-pearl/85 px-10 py-10 shadow-card backdrop-blur-sm lg:px-16 lg:py-14">
+              <p className="font-latin text-gold-gradient text-6xl italic leading-none lg:text-8xl">
                 B &amp; R
               </p>
-              <Ornament className="my-4" />
-              <h1 className="font-display text-2xl text-foreground">دعوة جاهة كريمة</h1>
+              <Ornament className="my-4 lg:my-6" />
+              <h1 className="font-display text-2xl text-foreground lg:text-3xl">دعوة جاهة كريمة</h1>
             </div>
-            <p className="mt-10 animate-pulse text-sm text-muted-foreground">
+            <p className="mt-10 animate-pulse text-sm text-muted-foreground lg:hidden">
               اسحب للأسفل لفتح الدعوة
             </p>
-            <span className="mt-2 text-gold" aria-hidden="true">
+            <span className="mt-2 text-gold lg:hidden" aria-hidden="true">
               ↓
             </span>
-          </div>
-        </div>
-      </section>
-
-      {/* Scene 2 */}
-      <section className="relative px-5 pb-10">
-        <div className="relative mx-auto max-w-md overflow-hidden rounded-t-[999px] border border-gold/50 bg-pearl px-6 pb-16 pt-28 text-center shadow-card">
-          {/* layered arch frames */}
-          <div className="pointer-events-none absolute inset-2 rounded-t-[999px] border border-gold/40" />
-          <div className="pointer-events-none absolute inset-4 rounded-t-[999px] border border-gold/20" />
-          <div className="pointer-events-none absolute inset-x-10 top-0 h-40 rounded-b-full bg-glow opacity-70" />
-          {/* crown ornament at arch apex */}
-          <div className="pointer-events-none absolute left-1/2 top-6 -translate-x-1/2">
-            <Star size={46} />
-          </div>
-          <img
-            src={floral}
-            alt=""
-            width={900}
-            height={900}
-            loading="lazy"
-            className="animate-sway absolute -right-8 -top-4 w-52 opacity-95"
-            // `scale` instead of `transform`, which the sway animation overrides.
-            style={{ scale: "-1 1" }}
-          />
-          <img
-            src={floral}
-            alt=""
-            width={900}
-            height={900}
-            loading="lazy"
-            className="animate-sway absolute -left-8 -top-4 w-52 opacity-95"
-            style={{ animationDelay: "1.2s" }}
-          />
-          <img
-            src={floral}
-            alt=""
-            width={900}
-            height={900}
-            loading="lazy"
-            className="absolute -bottom-10 -right-10 w-48 opacity-60"
-            style={{ transform: "scaleY(-1) scaleX(-1)" }}
-          />
-          <img
-            src={floral}
-            alt=""
-            width={900}
-            height={900}
-            loading="lazy"
-            className="absolute -bottom-10 -left-10 w-48 opacity-60"
-            style={{ transform: "scaleY(-1)" }}
-          />
-
-          <p className="reveal font-display text-gold-gradient text-4xl leading-snug">
-            بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
-          </p>
-          <div className="reveal mx-auto mt-6 max-w-[19rem] rounded-2xl border border-gold/30 bg-ivory/70 px-5 py-4 shadow-sm">
-            <p className="text-lg leading-loose text-olive">
-              ﴿ وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنْفُسِكُمْ أَزْوَاجًا لِتَسْكُنُوا
-              إِلَيْهَا ﴾
-            </p>
-          </div>
-          <Ornament className="reveal my-8" />
-          <p className="reveal text-lg leading-loose">
-            بكل الحب والسرور، وقلوب يملؤها الفرح، يتشرف
-          </p>
-          <p className="reveal mt-4 font-display text-3xl">السيد إبراهيم البرغوثي</p>
-          <p className="reveal my-1 font-latin text-2xl italic text-gold">&amp;</p>
-          <p className="reveal font-display text-3xl">السيد سليمان أبو ليلى</p>
-          <p className="reveal mt-5 text-lg">بدعوتكم لحضور خطوبة</p>
-
-          <div className="names relative my-12 py-8">
-            <Sparkles count={12} />
-            <img
-              src={rose}
-              alt=""
-              width={640}
-              height={640}
-              loading="lazy"
-              className="bloom absolute left-1/2 top-1/2 -ml-40 -mt-40 h-80 w-80"
-            />
-            <div className="relative">
-              <p className="reveal text-sm tracking-wide text-muted-foreground">ابنه</p>
-              <p className="reveal font-display text-gold-gradient text-8xl leading-tight drop-shadow-sm">
-                بلال
-              </p>
-              <div className="reveal my-3 flex items-center justify-center gap-3">
-                <span className="gold-line w-10" />
-                <span className="font-latin text-3xl italic text-gold">&amp;</span>
-                <span className="gold-line w-10" />
-              </div>
-              <p className="reveal text-sm tracking-wide text-muted-foreground">ابنته</p>
-              <p className="reveal font-display text-gold-gradient text-8xl leading-tight drop-shadow-sm">
-                روان
-              </p>
+            <div className="mt-12 hidden flex-col items-center gap-3 lg:flex">
+              <span className="mouse-hint" aria-hidden="true" />
+              <p className="text-base text-muted-foreground">مرّر عجلة الفأرة لفتح الدعوة</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Scene 3 */}
-      <section className="relative flex min-h-svh flex-col items-center justify-center px-5 pb-16 text-center">
-        <div className="relative mx-auto w-full max-w-md overflow-hidden rounded-[3rem] border border-gold/50 bg-pearl px-6 py-14 shadow-card">
-          <div className="pointer-events-none absolute inset-2 rounded-[2.6rem] border border-gold/40" />
-          <div className="pointer-events-none absolute inset-4 rounded-[2.2rem] border border-gold/20" />
-          <div className="pointer-events-none absolute inset-x-16 -top-10 h-32 rounded-b-full bg-glow opacity-80" />
-          <img
-            src={floral}
-            alt=""
-            width={900}
-            height={900}
-            loading="lazy"
-            className="absolute -left-8 -top-8 w-40 opacity-70"
-          />
-          <img
-            src={floral}
-            alt=""
-            width={900}
-            height={900}
-            loading="lazy"
-            className="absolute -bottom-8 -right-8 w-40 opacity-70"
-            style={{ transform: "scale(-1)" }}
-          />
+      {/* Scene 2: stacked cards on phones, an open book on desktop */}
+      <section className="book relative px-5 pb-28 lg:px-10 lg:pb-28 lg:pt-10">
+        <img
+          src={floral}
+          alt=""
+          width={900}
+          height={900}
+          loading="lazy"
+          data-depth="40"
+          className="pointer-events-none absolute -right-16 top-0 hidden w-[24rem] opacity-40 lg:block"
+          style={{ scale: "-1 1" }}
+        />
+        <img
+          src={floral}
+          alt=""
+          width={900}
+          height={900}
+          loading="lazy"
+          data-depth="28"
+          className="pointer-events-none absolute -left-16 bottom-0 hidden w-[24rem] opacity-40 lg:block"
+          style={{ scale: "1 -1" }}
+        />
 
-          <Ornament className="reveal mb-8" />
-          <p className="reveal font-display text-2xl text-olive">الاثنين</p>
-          <div
-            className="reveal mx-auto mt-4 flex items-center justify-center gap-4"
-            dir="ltr"
-            aria-label="19/10/2026"
-          >
-            <span className="font-latin text-6xl text-gold-gradient">19</span>
-            <span className="h-10 w-px bg-gold/50" />
-            <span className="font-latin text-6xl text-gold-gradient">10</span>
-            <span className="h-10 w-px bg-gold/50" />
-            <span className="font-latin text-6xl text-gold-gradient">2026</span>
+        <div className="relative mx-auto flex max-w-md flex-col gap-12 lg:max-w-6xl lg:flex-row lg:items-stretch lg:gap-0">
+          <div className="page-right lg:flex-1">
+            <div className="tilt h-full">
+              <InvitationPage />
+            </div>
           </div>
-          <p className="reveal mt-5 text-lg">من الساعة 7:00 مساءً حتى 9:00 مساءً</p>
-          <div className="reveal my-7 flex items-center justify-center gap-3">
-            <span className="gold-line w-16" />
-            <Star size={16} />
-            <span className="gold-line w-16" />
-          </div>
-          <div className="reveal flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
-            <p className="font-display text-3xl">{VENUE}</p>
-            <a
-              href={VENUE_MAP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="موقع الدارة على خرائط جوجل"
-              title="الموقع على الخريطة"
-              className="map-pin inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-gold/60 bg-pearl text-gold shadow-card transition hover:bg-gold hover:text-primary-foreground"
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z" />
-                <circle cx="12" cy="9.5" r="2.5" />
-              </svg>
-            </a>
-          </div>
-
-          <div className="reveal mt-9">
-            <Countdown />
-          </div>
-
-          <p className="reveal mt-9 font-display text-gold-gradient text-4xl leading-snug">
-            بحضوركم تكتمل فرحتنا
-          </p>
-
-          <div className="reveal mt-10 flex flex-col gap-3">
-            <button
-              type="button"
-              onClick={share}
-              className="rounded-full bg-gold px-6 py-3.5 font-bold text-primary-foreground shadow-card transition hover:opacity-90"
-            >
-              مشاركة الدعوة عبر واتساب
-            </button>
-            <button
-              type="button"
-              onClick={saveCalendar}
-              className="rounded-full border-2 border-gold px-6 py-3.5 text-gold transition hover:bg-gold/10"
-            >
-              حفظ الموعد في التقويم
-            </button>
+          <BookSpine />
+          <div className="page-left lg:flex-1">
+            <div className="tilt h-full">
+              <DetailsPage />
+            </div>
           </div>
         </div>
-        <div className="reveal mt-12">
+
+        <div className="reveal relative mt-12 text-center lg:mt-20">
           <Ornament />
-          <p className="mt-3 font-display text-gold-gradient text-5xl">بلال &amp; روان</p>
+          <p className="mt-3 font-display text-gold-gradient text-5xl lg:text-7xl">
+            بلال &amp; روان
+          </p>
         </div>
       </section>
+
+      <MobileActionBar />
     </main>
   );
 }
