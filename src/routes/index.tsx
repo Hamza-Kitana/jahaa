@@ -514,7 +514,6 @@ function InvitationPage() {
             className="bloom absolute left-1/2 top-1/2 -ml-40 -mt-40 h-80 w-80"
           />
           <div className="relative">
-            <p className="reveal text-sm tracking-wide text-muted-foreground">ابنه</p>
             <p className="reveal font-display text-gold-gradient text-8xl leading-tight drop-shadow-sm">
               بلال
             </p>
@@ -523,7 +522,6 @@ function InvitationPage() {
               <span className="font-latin text-3xl italic text-gold">&amp;</span>
               <span className="gold-line w-10" />
             </div>
-            <p className="reveal text-sm tracking-wide text-muted-foreground">ابنته</p>
             <p className="reveal font-display text-gold-gradient text-8xl leading-tight drop-shadow-sm">
               روان
             </p>
