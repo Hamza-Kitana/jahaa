@@ -6,9 +6,9 @@ import rose from "@/assets/white-rose.webp";
 const EVENT_START = new Date("2026-10-19T19:00:00+03:00");
 const EVENT_END = new Date("2026-10-19T21:00:00+03:00");
 const VENUE = "دارة الحاج أحمد مسلم الأعرج";
-// Search by name until the exact Google Maps share link is available.
-const VENUE_MAP_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(VENUE)}`;
-const VENUE_MAP_EMBED_URL = `https://maps.google.com/maps?q=${encodeURIComponent(VENUE)}&hl=ar&z=15&output=embed`;
+const VENUE_COORDS = "32.01993179321289,36.067955017089844";
+const VENUE_MAP_URL = `https://www.google.com/maps?q=${VENUE_COORDS}&z=17&hl=ar`;
+const VENUE_MAP_EMBED_URL = `https://maps.google.com/maps?q=${VENUE_COORDS}&hl=ar&z=16&output=embed`;
 const TITLE = "دعوة جاهة كريمة — بلال & روان";
 
 export const Route = createFileRoute("/")({
@@ -446,9 +446,9 @@ function VenueMap() {
           referrerPolicy="no-referrer-when-downgrade"
           tabIndex={-1}
           aria-hidden="true"
-          // Oversized so Google's place card sits outside the visible area, and lifted
-          // because Google draws the pin below the embed's center.
-          className="map-frame pointer-events-none absolute left-0 top-1/2 h-[calc(100%+14rem)] w-full -translate-y-[calc(50%+5rem)] border-0 transition duration-700 group-hover:scale-105"
+          // Oversized so Google's coordinates card sits outside the visible area, and
+          // nudged down so the pin's head (drawn above the exact point) is centered.
+          className="map-frame pointer-events-none absolute left-0 top-1/2 h-[calc(100%+14rem)] w-full -translate-y-[calc(50%-1rem)] border-0 transition duration-700 group-hover:scale-105"
         />
         <div className="pointer-events-none absolute inset-0 shadow-[inset_0_0_28px_oklch(0.95_0.03_85/0.75)]" />
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-linear-to-t from-pearl to-transparent" />
