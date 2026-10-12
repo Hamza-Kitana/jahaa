@@ -497,9 +497,10 @@ function InvitationPage() {
           بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
         </p>
         <div className="reveal mx-auto mt-6 max-w-[19rem] rounded-2xl border border-gold/30 bg-ivory/70 px-5 py-4 shadow-sm lg:max-w-sm">
-          <p className="text-lg leading-loose text-olive">
-            ﴿ وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنْفُسِكُمْ أَزْوَاجًا لِتَسْكُنُوا إِلَيْهَا
-            ﴾
+          <p className="text-balance text-lg leading-loose text-olive">
+            <span className="whitespace-nowrap">﴿ وَمِنْ</span> آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ
+            أَنْفُسِكُمْ أَزْوَاجًا لِتَسْكُنُوا{" "}
+            <span className="whitespace-nowrap">إِلَيْهَا ﴾</span>
           </p>
         </div>
         <Ornament className="reveal my-8" />
