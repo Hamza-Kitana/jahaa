@@ -19,8 +19,7 @@ export const Route = createFileRoute("/")({
       { title: TITLE },
       {
         name: "description",
-        content:
-          "يتشرف آل البريجي وآل أبو ليل بدعوتكم لحضور جاهة بلال وروان، الاثنين 19/10/2026.",
+        content: "يتشرف آل البريجي وآل أبو ليل بدعوتكم لحضور جاهة بلال وروان، الاثنين 19/10/2026.",
       },
       { property: "og:title", content: TITLE },
       { property: "og:description", content: `الاثنين 19/10/2026 — ${VENUE}` },
