@@ -106,6 +106,8 @@ function Door({ side }: { side: "left" | "right" }) {
     >
       <div className="absolute inset-4 rounded-t-[999px] border border-gold/50 lg:inset-8" />
       <div className="absolute inset-7 rounded-t-[999px] border border-gold/30 lg:inset-12" />
+      <div className="door-pattern absolute inset-7 rounded-t-[999px] lg:inset-12" />
+      <div className="absolute inset-x-10 bottom-[18%] top-[30%] rounded-t-[999px] border border-gold/35 shadow-[inset_0_0_40px_oklch(0.8_0.05_80/0.2)] lg:inset-x-[18%] lg:bottom-[14%] lg:top-[24%]" />
       {/* Sized by height on wide screens so the flowers stay corner pieces. */}
       <img
         src={floral}
@@ -730,6 +732,72 @@ function Splash() {
   );
 }
 
+// The date is wrapped in LTR isolates (U+2066…U+2069) so the Arabic around it doesn't reverse it.
+const SEAL_TEXT = "بلال & روان ✦ \u206619 · 10 · 2026\u2069 ✦ ";
+const SEAL_TEXT_RADIUS = 81;
+
+// The opening medallion: a slowly turning ring of text around the monogram.
+// The centre disc is sized relative to the seal so it never overlaps the text ring.
+function Seal() {
+  return (
+    <div className="relative flex h-[19rem] w-[19rem] items-center justify-center lg:h-[30rem] lg:w-[30rem]">
+      <div className="bg-glow absolute -inset-20 opacity-90" />
+      <svg
+        viewBox="0 0 200 200"
+        className="seal-ring absolute inset-0 overflow-visible text-gold"
+        aria-hidden="true"
+      >
+        <defs>
+          <path
+            id="seal-text-path"
+            d={`M100 100 m-${SEAL_TEXT_RADIUS} 0 a${SEAL_TEXT_RADIUS} ${SEAL_TEXT_RADIUS} 0 1 1 ${SEAL_TEXT_RADIUS * 2} 0 a${SEAL_TEXT_RADIUS} ${SEAL_TEXT_RADIUS} 0 1 1 -${SEAL_TEXT_RADIUS * 2} 0`}
+          />
+        </defs>
+        <circle cx="100" cy="100" r="97" fill="none" stroke="currentColor" strokeWidth="0.8" />
+        <circle
+          cx="100"
+          cy="100"
+          r="94"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="0.4"
+          opacity="0.6"
+        />
+        <circle
+          cx="100"
+          cy="100"
+          r="73"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1"
+          strokeDasharray="0.5 3"
+          strokeLinecap="round"
+        />
+        {/* LTR so the text starts at the path start instead of being pushed off its end;
+            textLength spreads it evenly around the whole circle. */}
+        <text className="font-display" fontSize="13" fill="currentColor" direction="ltr">
+          <textPath
+            href="#seal-text-path"
+            textLength={2 * Math.PI * SEAL_TEXT_RADIUS}
+            lengthAdjust="spacing"
+          >
+            {SEAL_TEXT.repeat(3)}
+          </textPath>
+        </text>
+      </svg>
+      <Star size={26} className="absolute -top-3 left-1/2 -translate-x-1/2 drop-shadow-sm" />
+      <div className="relative flex aspect-square w-[66%] flex-col items-center justify-center rounded-full border border-gold/40 bg-pearl shadow-card">
+        <div className="pointer-events-none absolute inset-2 rounded-full border border-gold/25" />
+        <p className="font-latin text-gold-gradient text-5xl italic leading-none lg:text-7xl">
+          B &amp; R
+        </p>
+        <Ornament className="my-3 lg:my-5" />
+        <h1 className="font-display text-xl text-foreground lg:text-3xl">دعوة جاهة كريمة</h1>
+      </div>
+    </div>
+  );
+}
+
 // Phones stack the two pages; this ties them together so the gap reads as one piece.
 function CardSeam() {
   return (
@@ -1293,21 +1361,18 @@ function Invitation() {
           <div className="door-crack pointer-events-none absolute inset-y-0 left-1/2 w-1 -translate-x-1/2 motion-reduce:hidden">
             <span className="door-crack-light absolute inset-0" />
           </div>
+          <div className="door-dust pointer-events-none absolute inset-0 hidden lg:block">
+            <Sparkles count={10} />
+          </div>
           <div className="door-intro pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center">
-            <div className="rounded-full bg-pearl/95 px-10 py-10 shadow-card lg:px-16 lg:py-14">
-              <p className="font-latin text-gold-gradient text-6xl italic leading-none lg:text-8xl">
-                B &amp; R
-              </p>
-              <Ornament className="my-4 lg:my-6" />
-              <h1 className="font-display text-2xl text-foreground lg:text-3xl">دعوة جاهة كريمة</h1>
-            </div>
-            <p className="mt-10 animate-pulse text-sm text-muted-foreground lg:hidden">
+            <Seal />
+            <p className="mt-6 animate-pulse text-sm text-muted-foreground lg:hidden">
               اسحب للأسفل لفتح الدعوة
             </p>
             <span className="mt-2 text-gold lg:hidden" aria-hidden="true">
               ↓
             </span>
-            <div className="mt-12 hidden flex-col items-center gap-3 lg:flex">
+            <div className="mt-6 hidden flex-col items-center gap-3 lg:flex">
               <span className="mouse-hint" aria-hidden="true" />
               <p className="text-base text-muted-foreground">مرّر عجلة الفأرة لفتح الدعوة</p>
             </div>

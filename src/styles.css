@@ -263,6 +263,28 @@
   }
 }
 
+/* Eight-point star lattice, faded toward the edges so the florals stay clean. */
+.door-pattern {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg fill='none' stroke='%23b38f50' stroke-width='0.7' stroke-opacity='0.6'%3E%3Crect x='19' y='19' width='22' height='22'/%3E%3Crect x='19' y='19' width='22' height='22' transform='rotate(45 30 30)'/%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3Cpath d='M0 30h8M52 30h8M30 0v8M30 52v8'/%3E%3Ccircle cx='0' cy='0' r='7'/%3E%3Ccircle cx='60' cy='0' r='7'/%3E%3Ccircle cx='0' cy='60' r='7'/%3E%3Ccircle cx='60' cy='60' r='7'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 52px 52px;
+  background-position: center top;
+  opacity: 0.55;
+  mask-image: radial-gradient(ellipse 75% 55% at 50% 50%, black 15%, transparent 72%);
+}
+@media (min-width: 1024px) {
+  .door-pattern {
+    background-size: 68px 68px;
+  }
+}
+.seal-ring {
+  animation: seal-spin 90s linear infinite;
+}
+@keyframes seal-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .door-crack-light {
   background: linear-gradient(
     to bottom,
@@ -410,6 +432,7 @@
   .map-pin::after,
   .mouse-hint::after,
   .btn-shine::after,
+  .seal-ring,
   .animate-pulse {
     animation: none;
   }
