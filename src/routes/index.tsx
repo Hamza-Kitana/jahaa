@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import bride from "@/assets/bride.webp";
 import floral from "@/assets/floral-corner.webp";
+import groom from "@/assets/groom.webp";
 import rose from "@/assets/white-rose.webp";
 
 const EVENT_START = new Date("2026-10-19T19:00:00+03:00");
@@ -190,6 +192,112 @@ function Petals({ count = 8 }: { count?: number }) {
         />
       ))}
     </div>
+  );
+}
+
+function WeddingRings({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 120 84" className={className} aria-hidden="true">
+      <defs>
+        <linearGradient id="wedding-ring-gold" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="oklch(0.62 0.08 70)" />
+          <stop offset="0.5" stopColor="oklch(0.9 0.07 88)" />
+          <stop offset="1" stopColor="oklch(0.66 0.09 72)" />
+        </linearGradient>
+      </defs>
+      <circle cx="46" cy="54" r="24" fill="none" stroke="url(#wedding-ring-gold)" strokeWidth="5" />
+      <circle cx="74" cy="54" r="24" fill="none" stroke="url(#wedding-ring-gold)" strokeWidth="5" />
+      <path
+        d="M74 30 L65 19 L69 13 H79 L83 19 Z"
+        fill="var(--pearl)"
+        stroke="url(#wedding-ring-gold)"
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+// The CSS default is the final pose (couple together, everything shown), so
+// reduced-motion users and the pre-hydration render both see the finished scene.
+function CoupleScene() {
+  return (
+    <section className="scene-couple relative h-[320svh]" aria-label="بلال وروان">
+      <div className="bg-silk sticky top-0 h-svh overflow-hidden">
+        <div className="couple-glow bg-glow absolute inset-0" />
+        <div className="couple-rays pointer-events-none absolute left-1/2 top-[48%] h-[150vmax] w-[150vmax] -translate-x-1/2 -translate-y-1/2" />
+        <div className="couple-sparkles absolute inset-0">
+          <Sparkles count={14} />
+        </div>
+
+        <svg
+          viewBox="0 0 200 300"
+          preserveAspectRatio="none"
+          className="couple-arch pointer-events-none absolute bottom-[10svh] left-1/2 h-[64svh] w-[min(92vw,56svh)] -translate-x-1/2 lg:bottom-[3svh] lg:h-[86svh] lg:w-[64svh]"
+          aria-hidden="true"
+        >
+          <path d="M6 300 V96 A94 94 0 0 1 194 96 V300" className="couple-arch-line" />
+          <path
+            d="M18 300 V100 A82 82 0 0 1 182 100 V300"
+            className="couple-arch-line opacity-50"
+          />
+        </svg>
+
+        <div className="couple-intro absolute inset-x-0 top-[38svh] px-6 text-center motion-reduce:hidden">
+          <p className="font-display text-3xl text-olive lg:text-5xl">وتبدأ الحكاية…</p>
+          <p className="mt-3 animate-pulse text-sm text-muted-foreground lg:text-base">
+            تابع النزول
+          </p>
+        </div>
+
+        <div className="couple-title absolute inset-x-0 top-[7svh] px-6 text-center lg:top-[5svh]">
+          <p className="font-display text-gold-gradient text-5xl leading-snug lg:text-7xl">
+            وتلاقت القلوب
+          </p>
+          <p className="mt-1 font-display text-lg text-olive lg:text-2xl">على بركة الله</p>
+          <p className="mt-2 font-display text-2xl text-gold lg:hidden">بلال &amp; روان</p>
+        </div>
+
+        <p className="couple-name-bride font-display text-gold-gradient absolute left-[6%] top-1/2 hidden text-8xl xl:left-[10%] lg:block">
+          روان
+        </p>
+        <p className="couple-name-groom font-display text-gold-gradient absolute right-[6%] top-1/2 hidden text-8xl xl:right-[10%] lg:block">
+          بلال
+        </p>
+
+        {/* Kept above the phone's bottom action bar. */}
+        <div className="couple-floor absolute bottom-[9svh] left-1/2 h-10 w-[min(88vw,34rem)] -translate-x-1/2 rounded-[50%] lg:bottom-[2svh] lg:h-14 lg:w-[44rem]" />
+
+        <div
+          className="couple-stage absolute inset-x-0 bottom-[11svh] flex h-[48svh] origin-bottom items-end justify-center lg:bottom-[4svh] lg:h-[68svh]"
+          dir="ltr"
+        >
+          <div className="couple-bride relative h-[95%]">
+            <img
+              src={bride}
+              decoding="async"
+              alt="العروس روان"
+              width={555}
+              height={1014}
+              loading="lazy"
+              className="couple-step h-full w-auto max-w-none"
+            />
+          </div>
+          <div className="couple-groom relative -ml-[3svh] h-full">
+            <img
+              src={groom}
+              decoding="async"
+              alt="العريس بلال"
+              width={381}
+              height={1113}
+              loading="lazy"
+              className="couple-step h-full w-auto max-w-none"
+            />
+          </div>
+          <WeddingRings className="couple-rings absolute left-1/2 top-0 w-20 -translate-x-1/2 -translate-y-[85%] drop-shadow-md lg:w-24" />
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -742,6 +850,63 @@ function Invitation() {
       const desktop = gsap.matchMedia(root.current);
       mm = desktop;
 
+      // The couple walks in from both sides and meets under the arch.
+      desktop.add("(prefers-reduced-motion: no-preference)", () => {
+        gsap
+          .timeline({
+            defaults: { ease: "none" },
+            scrollTrigger: {
+              trigger: ".scene-couple",
+              start: "top top",
+              end: "bottom bottom",
+              scrub: 1,
+            },
+          })
+          .to(".couple-intro", { opacity: 0, y: -24, duration: 0.12 }, 0.02)
+          .from(".couple-stage", { scale: 0.86, duration: 0.7, ease: "power1.out" }, 0)
+          .from(
+            ".couple-bride",
+            { x: "-62vw", opacity: 0, duration: 0.6, ease: "power2.out" },
+            0.04,
+          )
+          .from(".couple-groom", { x: "62vw", opacity: 0, duration: 0.6, ease: "power2.out" }, 0.04)
+          .to(
+            ".couple-bride .couple-step",
+            { keyframes: { y: [0, -4, 0, -4, 0, -4, 0] }, duration: 0.6 },
+            0.04,
+          )
+          .to(
+            ".couple-groom .couple-step",
+            { keyframes: { y: [0, -7, 0, -7, 0, -7, 0] }, duration: 0.6 },
+            0.04,
+          )
+          .from(".couple-floor", { opacity: 0, scaleX: 0.3, duration: 0.6 }, 0.04)
+          .fromTo(
+            ".couple-glow",
+            { opacity: 0.2, scale: 0.6 },
+            { opacity: 1, scale: 1.15, duration: 0.4 },
+            0.45,
+          )
+          .fromTo(
+            ".couple-arch",
+            { clipPath: "inset(100% 0% 0% 0%)" },
+            { clipPath: "inset(0% 0% 0% 0%)", duration: 0.35, ease: "power1.inOut" },
+            0.46,
+          )
+          .from(".couple-rays", { opacity: 0, rotate: -30, duration: 0.38 }, 0.62)
+          .from(
+            ".couple-rings",
+            { scale: 0, rotate: -50, opacity: 0, duration: 0.16, ease: "back.out(2.2)" },
+            0.62,
+          )
+          .from(".couple-title > *", { opacity: 0, y: 26, duration: 0.14, stagger: 0.05 }, 0.66)
+          .from(".couple-name-bride", { opacity: 0, x: -60, duration: 0.18 }, 0.7)
+          .from(".couple-name-groom", { opacity: 0, x: 60, duration: 0.18 }, 0.7)
+          .from(".couple-sparkles", { opacity: 0, duration: 0.2 }, 0.7)
+          .to(".couple-bride", { x: "1.2vw", duration: 0.18 }, 0.8)
+          .to(".couple-groom", { x: "-1.2vw", duration: 0.18 }, 0.8);
+      });
+
       // Desktop: the two pages open like a book.
       desktop.add("(min-width: 1024px) and (prefers-reduced-motion: no-preference)", () => {
         const trigger = { trigger: ".book", start: "top 70%" };
@@ -914,7 +1079,10 @@ function Invitation() {
         </div>
       </section>
 
-      {/* Scene 2: stacked cards on phones, an open book on desktop */}
+      {/* Scene 2: the bride and groom walk toward each other */}
+      <CoupleScene />
+
+      {/* Scene 3: stacked cards on phones, an open book on desktop */}
       <section className="book relative px-5 pb-28 lg:px-10 lg:pb-28 lg:pt-10">
         <img
           src={floral}
