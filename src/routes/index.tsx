@@ -698,6 +698,33 @@ function BookSpine() {
   );
 }
 
+// Phones stack the two pages; this ties them together so the gap reads as one piece.
+function CardSeam() {
+  return (
+    <div className="relative flex h-24 items-center justify-center lg:hidden" aria-hidden="true">
+      {["left-12", "right-12"].map((side) => (
+        <span key={side} className={`absolute inset-y-0 ${side} flex flex-col items-center`}>
+          <span className="h-1.5 w-1.5 rounded-full bg-gold" />
+          <span className="w-px flex-1 bg-linear-to-b from-gold to-gold/40" />
+          <span className="h-1.5 w-1.5 rounded-full bg-gold" />
+        </span>
+      ))}
+      <div className="reveal flex items-center gap-3">
+        <span className="gold-line w-10" />
+        <div
+          className="flex items-center gap-2.5 rounded-full border border-gold/50 bg-pearl px-4 py-1.5 shadow-card"
+          dir="ltr"
+        >
+          <span className="font-latin text-2xl italic text-gold">B</span>
+          <Star size={18} />
+          <span className="font-latin text-2xl italic text-gold">R</span>
+        </div>
+        <span className="gold-line w-10" />
+      </div>
+    </div>
+  );
+}
+
 type ActionBarItemProps = { label: string; icon: ReactNode } & (
   { href: string } | { onClick: () => void }
 );
@@ -1106,12 +1133,13 @@ function Invitation() {
           style={{ scale: "1 -1" }}
         />
 
-        <div className="relative mx-auto flex max-w-md flex-col gap-12 lg:max-w-6xl lg:flex-row lg:items-stretch lg:gap-0">
+        <div className="relative mx-auto flex max-w-md flex-col lg:max-w-6xl lg:flex-row lg:items-stretch">
           <div className="page-right lg:flex-1">
             <div className="tilt h-full">
               <InvitationPage />
             </div>
           </div>
+          <CardSeam />
           <BookSpine />
           <div className="page-left lg:flex-1">
             <div className="tilt h-full">
