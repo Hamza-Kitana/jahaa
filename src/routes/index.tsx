@@ -170,7 +170,7 @@ function Countdown() {
 
   let remaining = now === null ? null : EVENT_START.getTime() - now;
   return (
-    <div className="flex items-stretch justify-center gap-2" role="timer" aria-live="off">
+    <div className="flex items-stretch justify-center gap-2" dir="ltr" role="timer" aria-live="off">
       {COUNTDOWN_UNITS.map(({ label, ms }) => {
         let value: string = "--";
         if (remaining !== null) {
