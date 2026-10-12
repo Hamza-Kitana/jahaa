@@ -20,7 +20,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "يتشرف آل البرغوثي وآل أبو ليلى بدعوتكم لحضور جاهة بلال وروان، الاثنين 19/10/2026.",
+          "يتشرف آل البريجي وآل أبو ليل بدعوتكم لحضور جاهة بلال وروان، الاثنين 19/10/2026.",
       },
       { property: "og:title", content: TITLE },
       { property: "og:description", content: `الاثنين 19/10/2026 — ${VENUE}` },
@@ -498,9 +498,9 @@ function InvitationPage() {
         </div>
         <Ornament className="reveal my-8" />
         <p className="reveal text-lg leading-loose">بكل الحب والسرور، وقلوب يملؤها الفرح، يتشرف</p>
-        <p className="reveal mt-4 font-display text-3xl">السيد إبراهيم البرغوثي</p>
+        <p className="reveal mt-4 font-display text-3xl">السيد إبراهيم البريجي</p>
         <p className="reveal my-1 font-latin text-2xl italic text-gold">&amp;</p>
-        <p className="reveal font-display text-3xl">السيد سليمان أبو ليلى</p>
+        <p className="reveal font-display text-3xl">السيد سليمان أبو ليل</p>
         <p className="reveal mt-5 text-lg">بدعوتكم لحضور خطوبة</p>
 
         <div className="names relative my-12 py-8">
