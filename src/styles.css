@@ -125,6 +125,10 @@
   }
 }
 
+.map-frame {
+  filter: sepia(0.35) saturate(0.85) hue-rotate(-8deg) contrast(0.95) brightness(1.03);
+}
+
 .map-pin {
   position: relative;
 }

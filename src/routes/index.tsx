@@ -8,6 +8,7 @@ const EVENT_END = new Date("2026-10-19T21:00:00+03:00");
 const VENUE = "دارة الحاج أحمد مسلم الأعرج";
 // Search by name until the exact Google Maps share link is available.
 const VENUE_MAP_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(VENUE)}`;
+const VENUE_MAP_EMBED_URL = `https://maps.google.com/maps?q=${encodeURIComponent(VENUE)}&hl=ar&z=15&output=embed`;
 const TITLE = "دعوة جاهة كريمة — بلال & روان";
 
 export const Route = createFileRoute("/")({
@@ -416,6 +417,51 @@ function InvitationPage() {
   );
 }
 
+// A non-interactive map preview; the whole card opens Google Maps so the
+// embedded map never swallows scroll gestures on phones.
+function VenueMap() {
+  return (
+    <a
+      href={VENUE_MAP_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="افتح موقع الدارة على خرائط جوجل"
+      className="group relative block overflow-hidden rounded-[1.75rem] border border-gold/50 bg-ivory text-right shadow-card transition duration-500 hover:-translate-y-1"
+    >
+      <div className="relative h-48 overflow-hidden lg:h-56">
+        <iframe
+          title="خريطة موقع الدارة"
+          src={VENUE_MAP_EMBED_URL}
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          tabIndex={-1}
+          aria-hidden="true"
+          // Oversized so Google's place card sits outside the visible area, and lifted
+          // because Google draws the pin below the embed's center.
+          className="map-frame pointer-events-none absolute left-0 top-1/2 h-[calc(100%+14rem)] w-full -translate-y-[calc(50%+5rem)] border-0 transition duration-700 group-hover:scale-105"
+        />
+        <div className="pointer-events-none absolute inset-0 shadow-[inset_0_0_28px_oklch(0.95_0.03_85/0.75)]" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-linear-to-t from-pearl to-transparent" />
+        <span className="absolute right-3 top-3 rounded-full border border-gold/40 bg-pearl/90 px-3 py-1 text-xs text-gold shadow-sm backdrop-blur-sm">
+          خرائط جوجل
+        </span>
+      </div>
+      <div className="relative flex items-center gap-3 bg-pearl px-4 py-3">
+        <span className="map-pin flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gold text-primary-foreground shadow-card">
+          <PinIcon />
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="font-display text-lg leading-tight text-foreground">الموقع على الخريطة</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">اضغط لفتح الاتجاهات</p>
+        </div>
+        <span className="shrink-0 rounded-full border border-gold/60 px-3 py-1.5 text-sm text-gold transition group-hover:bg-gold group-hover:text-primary-foreground">
+          افتح الخريطة
+        </span>
+      </div>
+    </a>
+  );
+}
+
 function DetailsPage() {
   return (
     <div className="relative h-full overflow-hidden rounded-[3rem] border border-gold/50 bg-pearl px-6 py-14 text-center shadow-card lg:flex lg:flex-col lg:justify-center lg:rounded-t-[999px] lg:px-12 lg:pt-36">
@@ -480,18 +526,9 @@ function DetailsPage() {
           <Star size={16} />
           <span className="gold-line w-16" />
         </div>
-        <div className="reveal flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
-          <p className="font-display text-3xl">{VENUE}</p>
-          <a
-            href={VENUE_MAP_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="موقع الدارة على خرائط جوجل"
-            title="الموقع على الخريطة"
-            className="map-pin inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-gold/60 bg-pearl text-gold shadow-card transition hover:bg-gold hover:text-primary-foreground"
-          >
-            <PinIcon />
-          </a>
+        <p className="reveal font-display text-3xl">{VENUE}</p>
+        <div className="reveal mt-6">
+          <VenueMap />
         </div>
 
         <div className="reveal mt-9">
