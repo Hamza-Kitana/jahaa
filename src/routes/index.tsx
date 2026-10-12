@@ -107,6 +107,7 @@ function Door({ side }: { side: "left" | "right" }) {
       {/* Sized by height on wide screens so the flowers stay corner pieces. */}
       <img
         src={floral}
+        decoding="async"
         alt=""
         width={900}
         height={900}
@@ -118,6 +119,7 @@ function Door({ side }: { side: "left" | "right" }) {
       />
       <img
         src={floral}
+        decoding="async"
         alt=""
         width={900}
         height={900}
@@ -141,7 +143,10 @@ function Sparkles({ count = 14 }: { count?: number }) {
     })),
   ).current;
   return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+    <div
+      className="sparkles pointer-events-none absolute inset-0 overflow-hidden"
+      aria-hidden="true"
+    >
       {dots.map((d, i) => (
         <span
           key={i}
@@ -333,6 +338,7 @@ function InvitationPage() {
       </div>
       <img
         src={floral}
+        decoding="async"
         alt=""
         width={900}
         height={900}
@@ -343,6 +349,7 @@ function InvitationPage() {
       />
       <img
         src={floral}
+        decoding="async"
         alt=""
         width={900}
         height={900}
@@ -352,6 +359,7 @@ function InvitationPage() {
       />
       <img
         src={floral}
+        decoding="async"
         alt=""
         width={900}
         height={900}
@@ -361,6 +369,7 @@ function InvitationPage() {
       />
       <img
         src={floral}
+        decoding="async"
         alt=""
         width={900}
         height={900}
@@ -390,6 +399,7 @@ function InvitationPage() {
           <Sparkles count={12} />
           <img
             src={rose}
+            decoding="async"
             alt=""
             width={640}
             height={640}
@@ -442,7 +452,7 @@ function VenueMap() {
         />
         <div className="pointer-events-none absolute inset-0 shadow-[inset_0_0_28px_oklch(0.95_0.03_85/0.75)]" />
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-linear-to-t from-pearl to-transparent" />
-        <span className="absolute right-3 top-3 rounded-full border border-gold/40 bg-pearl/90 px-3 py-1 text-xs text-gold shadow-sm backdrop-blur-sm">
+        <span className="absolute right-3 top-3 rounded-full border border-gold/40 bg-pearl/95 px-3 py-1 text-xs text-gold shadow-sm">
           خرائط جوجل
         </span>
       </div>
@@ -472,6 +482,7 @@ function DetailsPage() {
       </div>
       <img
         src={floral}
+        decoding="async"
         alt=""
         width={900}
         height={900}
@@ -480,6 +491,7 @@ function DetailsPage() {
       />
       <img
         src={floral}
+        decoding="async"
         alt=""
         width={900}
         height={900}
@@ -489,6 +501,7 @@ function DetailsPage() {
       />
       <img
         src={floral}
+        decoding="async"
         alt=""
         width={900}
         height={900}
@@ -498,6 +511,7 @@ function DetailsPage() {
       />
       <img
         src={floral}
+        decoding="async"
         alt=""
         width={900}
         height={900}
@@ -642,7 +656,7 @@ function MobileActionBar() {
       }`}
       style={{ bottom: "calc(1rem + env(safe-area-inset-bottom))" }}
     >
-      <div className="mx-auto flex max-w-sm items-center rounded-full border border-gold/40 bg-pearl/85 px-3 py-1.5 shadow-card backdrop-blur-md">
+      <div className="mx-auto flex max-w-sm items-center rounded-full border border-gold/40 bg-pearl/95 px-3 py-1.5 shadow-card">
         <ActionBarItem label="مشاركة" icon={<ChatIcon />} onClick={share} />
         <span className="h-8 w-px bg-gold/25" />
         <ActionBarItem label="الموقع" icon={<PinIcon />} href={VENUE_MAP_URL} />
@@ -703,10 +717,8 @@ function Invitation() {
           gsap.from(el, {
             opacity: 0,
             y: 24,
-            filter: "blur(6px)",
             duration: 1.1,
             ease: "power2.out",
-            clearProps: "filter",
             scrollTrigger: {
               trigger: el,
               start: "top 88%",
@@ -788,6 +800,7 @@ function Invitation() {
           const glowX = gsap.quickTo(glow, "x", { duration: 0.6, ease: "power3" });
           const glowY = gsap.quickTo(glow, "y", { duration: 0.6, ease: "power3" });
 
+          let glowShown = false;
           const onMove = (e: MouseEvent) => {
             const nx = e.clientX / window.innerWidth - 0.5;
             const ny = e.clientY / window.innerHeight - 0.5;
@@ -801,11 +814,17 @@ function Invitation() {
             });
             glowX(e.clientX);
             glowY(e.clientY);
-            gsap.to(glow, { opacity: 1, duration: 0.6, overwrite: "auto" });
+            if (!glowShown) {
+              glowShown = true;
+              gsap.to(glow, { opacity: 1, duration: 0.6, overwrite: "auto" });
+            }
           };
-          const onLeave = () => gsap.to(glow, { opacity: 0, duration: 0.6, overwrite: "auto" });
+          const onLeave = () => {
+            glowShown = false;
+            gsap.to(glow, { opacity: 0, duration: 0.6, overwrite: "auto" });
+          };
 
-          window.addEventListener("mousemove", onMove);
+          window.addEventListener("mousemove", onMove, { passive: true });
           document.documentElement.addEventListener("mouseleave", onLeave);
           return () => {
             window.removeEventListener("mousemove", onMove);
@@ -827,6 +846,20 @@ function Invitation() {
     };
   }, []);
 
+  // Looping CSS animations keep repainting even when scrolled out of view; pause them there.
+  useEffect(() => {
+    const targets = root.current?.querySelectorAll(".text-gold-gradient, .sparkles");
+    if (!targets?.length) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => e.target.classList.toggle("is-offscreen", !e.isIntersecting));
+      },
+      { rootMargin: "100px 0px" },
+    );
+    targets.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <main ref={root} className="overflow-x-clip bg-background font-body text-foreground">
       <div className="cursor-glow pointer-events-none fixed left-0 top-0 z-20 hidden h-[36rem] w-[36rem] rounded-full opacity-0 lg:block" />
@@ -837,7 +870,7 @@ function Invitation() {
         <div className="sticky top-0 h-svh overflow-hidden" style={{ perspective: "1600px" }}>
           <div className="bg-silk door-curtain absolute inset-0 origin-center" />
           <div className="door-glow bg-glow absolute inset-0" />
-          <Sparkles count={22} />
+          <Sparkles count={16} />
           <div className="door-reveal absolute inset-0 flex flex-col items-center justify-center px-6 text-center opacity-0">
             <p className="font-display text-xl text-olive lg:text-3xl">بكل الحب نزفّ إليكم</p>
             <div className="mt-4 flex flex-col items-center lg:mt-8 lg:flex-row lg:gap-12">
@@ -860,7 +893,7 @@ function Invitation() {
           <Door side="left" />
           <Door side="right" />
           <div className="door-intro pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center">
-            <div className="rounded-full bg-pearl/85 px-10 py-10 shadow-card backdrop-blur-sm lg:px-16 lg:py-14">
+            <div className="rounded-full bg-pearl/95 px-10 py-10 shadow-card lg:px-16 lg:py-14">
               <p className="font-latin text-gold-gradient text-6xl italic leading-none lg:text-8xl">
                 B &amp; R
               </p>
@@ -885,6 +918,7 @@ function Invitation() {
       <section className="book relative px-5 pb-28 lg:px-10 lg:pb-28 lg:pt-10">
         <img
           src={floral}
+          decoding="async"
           alt=""
           width={900}
           height={900}
@@ -895,6 +929,7 @@ function Invitation() {
         />
         <img
           src={floral}
+          decoding="async"
           alt=""
           width={900}
           height={900}
